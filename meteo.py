@@ -32,12 +32,17 @@ def get_temp_values(csv_filepath,date_start,date_end):
     return(pd_orly_temp)
 
 def get_temperatures(date_start,date_end):
+    if not os.path.exists("temp"):
+        os.makedirs("temp")
+    if not os.path.exists("meteo_txt_files"):
+        os.makedirs("meteo_txt_files")
     year_start= date_start.year
     year_end= date_end.year
     month_start= date_start.month
     month_end= date_end.month
     monthes = (year_end-year_start) * 12 + (month_end-month_start) + 1
     pd_orly_temp_all = pd.DataFrame()
+
     for month in range(monthes):
         year_download = (month -1 + month_start) // 12 + year_start
         month_download =  (month - 1 + month_start) % 12 + 1
