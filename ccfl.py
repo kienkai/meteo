@@ -63,36 +63,11 @@ def get_temperatures(date_start,date_end):
         pd_orly_temp_all = pd.concat([pd_orly_temp_all, pd_orly_temp])
     return pd_orly_temp_all
 
-date_start = None
-date_end = None
-st.header("Température à Paris Orly (site = 7005) à midi")
-dts = st.date_input(
-    label="Intervalle de dates ",
-    value=(datetime.datetime.now(), datetime.datetime.now()),
-    key="#date_range",
-    help="Date de début ET date de fin ",
-)
-if dts and len(dts) == 2:
-    date_start = dts[0]
-    date_end = dts[1]
-# if start_dt and end_dt:
-#     start_date = start_dt.strftime("%Y-%m-%d")
-#     end_date = end_dt.strftime("%Y-%m-%d")
 
-# date_start = datetime.date(2011,5,6)
-# date_end = datetime.date(2023,3,30)
-if date_start and date_end:
-    pd_orly_temp_all = get_temperatures(date_start,date_end)
-    pd_orly_temp_all.reset_index(inplace=True)
-    pd_orly_temp_all['datetime'] = pd.to_datetime(pd_orly_temp_all['date'].astype(str).str[0:8])
-    pd_orly_temp_all.set_index('datetime',inplace=True)
-    #lines = pd_orly_temp_all[['t_celsius']].plot.line()
-    st.line_chart(pd_orly_temp_all[['t_celsius']])
-    csv = pd_orly_temp_all[['t_celsius']].to_csv()
-    st.download_button(
-     label="Télécharger en fichier CSV",
-     data=csv,
-     file_name='temperatures.csv',
-     mime='text/csv',
-    )
+st.header("CCFL")
+    
+picture = st.camera_input("Take a picture")
+
+if picture:
+    st.image(picture)
 
