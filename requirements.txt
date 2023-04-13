@@ -1,5 +1,6 @@
 altair==4.2.2
 attrs==22.2.0
+bcrypt==4.0.1
 blinker==1.6.2
 cachetools==5.3.0
 certifi==2022.12.7
@@ -10,6 +11,7 @@ contourpy==1.0.7
 cycler==0.11.0
 decorator==5.1.1
 entrypoints==0.4
+extra-streamlit-components==0.1.56
 fonttools==4.39.3
 gitdb==4.0.10
 GitPython==3.1.31
@@ -39,18 +41,21 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pydeck==0.8.0
 Pygments==2.15.0
+PyJWT==2.6.0
 Pympler==1.0.1
 pyparsing==3.0.9
 pyrsistent==0.19.3
 python-dateutil==2.8.2
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
+PyYAML==6.0
 requests==2.28.2
 rich==13.3.4
 rsa==4.9
 six==1.16.0
 smmap==5.0.0
 streamlit==1.21.0
+streamlit-authenticator==0.2.1
 toml==0.10.2
 toolz==0.12.0
 tornado==6.2

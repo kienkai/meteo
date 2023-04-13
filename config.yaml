@@ -1,0 +1,14 @@
+credentials:
+  usernames:
+    eric:
+      email: kienkai0511@free.fr
+      name: eric
+      password: $2b$12$1ZarN/bMbekdXIfr/F.fCuyhMtIeTmvMPS0A0NXIaHIEe17n17iEm # To be replaced with hashed password
+    sebastien:
+      email: kienkai0511@free.fr
+      name: sebastien
+      password: $2b$12$9TlNiSCiMuzCst04BgnKwu42sVQ.PUILldAqbWuXCql0uX/HK9s3y # To be replaced with hashed password
+cookie:
+  expiry_days: 30
+  key: random_signature_key # Must be string
+  name: random_cookie_name

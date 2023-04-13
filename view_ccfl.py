@@ -6,6 +6,10 @@ from typing import  List, Tuple, Dict, Any
 from google.cloud import vision_v1
 from google.cloud.vision_v1 import AnnotateImageResponse
 from google.oauth2 import service_account
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+
 
 #from commons.api.googlevision import GoogleVisionOcr
 #from commons.constants import DOCUMENT_TEXT_DETECTION, TEXT_DETECTION
@@ -199,30 +203,53 @@ def get_lcd_ccfl(
     print("after ", retros)
     return list(set(retros)), list(set(models))
 
-st.header("Détection LED /CCFL")
-img_file_buffer = st.camera_input("Prenez une plaque signalétique d'un écran en photo")
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
 
-if img_file_buffer is not None:
-    # To read image file buffer as bytes:
-    bytes_data = img_file_buffer.getvalue()
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    #config['preauthorized']
+)
 
-    # run ocr with google vision for text and document
-    text, _ = google_vision_ocr.structure_google_vision_return(bytes_data, TEXT_DETECTION)
-    document, _ = google_vision_ocr.structure_google_vision_return(bytes_data, DOCUMENT_TEXT_DETECTION)
-    ocr_json = {"ocr_text": text, "ocr_document": document}
-    full_text = extract_full_text_from_ocr_objects([ocr_json])
-    if full_text:
-        #st.write(full_text)
-        models = get_displays_from_compare_csv()
-        models = exclude_dbb(models)
+name, authentication_status, username = authenticator.login('Login', 'main')
+good = False
+if authentication_status:
+    authenticator.logout('Logout', 'main')
+    st.write(f'Welcome *{name}*')
+    good = True
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
 
-        res = get_lcd_ccfl(full_text,models)
-        if res[0]:
-            st.write(f"Marque : {res[1]}")
-            st.write(f"Modèle : {res[0][0][0]}")
-            st.markdown(f"Rétro éclairage : **{res[0][0][1]}**")
+if good:
+    st.header("Détection LED /CCFL")
+    img_file_buffer = st.camera_input("Prenez une plaque signalétique d'un écran en photo")
+
+    if img_file_buffer is not None:
+        # To read image file buffer as bytes:
+        bytes_data = img_file_buffer.getvalue()
+
+        # run ocr with google vision for text and document
+        text, _ = google_vision_ocr.structure_google_vision_return(bytes_data, TEXT_DETECTION)
+        document, _ = google_vision_ocr.structure_google_vision_return(bytes_data, DOCUMENT_TEXT_DETECTION)
+        ocr_json = {"ocr_text": text, "ocr_document": document}
+        full_text = extract_full_text_from_ocr_objects([ocr_json])
+        if full_text:
+            #st.write(full_text)
+            models = get_displays_from_compare_csv()
+            models = exclude_dbb(models)
+
+            res = get_lcd_ccfl(full_text,models)
+            if res[0]:
+                st.write(f"Marque : {res[1]}")
+                st.write(f"Modèle : {res[0][0][0]}")
+                st.markdown(f"Rétro éclairage : **{res[0][0][1]}**")
+            else:
+                st.write("Information rétro éclairage non trouvée")
         else:
-            st.write("Information rétro éclairage non trouvée")
-    else:
-        st.write("Pas de plaque détectée")
+            st.write("Pas de plaque détectée")
 
