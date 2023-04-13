@@ -23,7 +23,23 @@ class GoogleVisionOcr:
         client object
             client object returned by google vision
         """
-        creds = service_account.Credentials.from_service_account_file("GoogleVision.json")
+        #creds = service_account.Credentials.from_service_account_file("GoogleVision.json")
+
+        service_account_info = {
+            "type": st.secrets["type"],
+            "project_id": st.secrets["project_id"],
+            "private_key_id": st.secrets["private_key_id"],
+            "private_key": st.secrets["private_key"],
+            "client_email": st.secrets["client_email"],
+            "client_id": st.secrets["client_id"],
+            "auth_uri": st.secrets["auth_uri"],
+            "token_uri": st.secrets["token_uri"],
+            "auth_provider_x509_cert_url": st.secrets["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": st.secrets["client_x509_cert_url"]
+        }
+
+        creds = service_account.Credentials.from_service_account_info(service_account_info)
+
         self.client = vision_v1.ImageAnnotatorClient(credentials=creds)
 
     def get_google_vision_text(self, img, type):
@@ -186,7 +202,7 @@ def get_lcd_ccfl(
 brand_name = sel_brand()
 
 if brand_name != 'no brand':
-    st.write("My cool secrets:", st.secrets["my_cool_secrets"]["vision_secret"])
+    #st.write("My cool secrets:", st.secrets["my_cool_secrets"]["vision_secret"])
     img_file_buffer = st.camera_input("Take a picture")
 
     if img_file_buffer is not None:
