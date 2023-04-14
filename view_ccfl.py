@@ -158,9 +158,9 @@ def extract_full_text_from_ocr_objects(ocr_jsons: List[Dict[str, Any]]) -> str:
 # connexion to google vision OCR
 google_vision_ocr = GoogleVisionOcr()
 
-def sel_brand():
-    brand_names = ['no brand','sony','dell']
-    #brand_names = sorted(brand_names)
+def sel_brand(brands):
+    brand_names = sorted(brands)
+    brand_names = ['no brand']+brand_names
     brand_name = st.sidebar.selectbox("Marque", brand_names,index = 0)
     return brand_name
 
@@ -226,6 +226,12 @@ elif authentication_status == None:
     st.warning('Please enter your username and password')
 
 if good:
+    models = get_displays_from_compare_csv()
+    models = exclude_dbb(models)
+
+    brands = list(set([model[0] for model in models]))
+    brand_name = sel_brand(brands)
+    
     st.header("Détection LED /CCFL")
     img_file_buffer = st.camera_input("Prenez une plaque signalétique d'un écran en photo")
 
@@ -240,8 +246,8 @@ if good:
         full_text = extract_full_text_from_ocr_objects([ocr_json])
         if full_text:
             #st.write(full_text)
-            models = get_displays_from_compare_csv()
-            models = exclude_dbb(models)
+            if brand_name != 'no brand':
+                models = [model for model in models if model[0] == brand_name]
 
             res = get_lcd_ccfl(full_text,models)
             if res[0]:
